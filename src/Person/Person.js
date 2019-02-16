@@ -13,8 +13,4 @@ const person = (props) => {
     );
 };
 
-
-// (props) => valores inputados no html do component
-// props.children => conteúdo inputado dentro do componente igual ng-content
-
 export default person;

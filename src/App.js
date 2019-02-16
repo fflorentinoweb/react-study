@@ -11,110 +11,83 @@ import Person from './Person/Person';
 class App extends Component {
   state = {
     persons: [
-      {  name: 'Flávio', age: '22' },
-      {  name: 'Julia', age: '21' },
-    ]
+      { id: 1, name: 'Flávio', age: '22' },
+      { id: 2, name: 'Julia', age: '21' },
+    ],
+    showPersons: false
   }
 
-  // state => propriedade do react que ao ter uma propriedade altera chama a funcao de render,
-  // tomar cuidado ao utilizar, apenas quando necessário
+  deletePerson = (personIndex) => {
+    // const persons = this.state.persons.slice();
+    // .slice() creates a copy of de object not a pointer, like the spread operator ....
+    const persons = [...this.state.persons];
+    persons.splice(personIndex, 1);
 
-
-  swithNameHandler = (newPerson) => {
-    // set state => usado para atualizar parte do state de forma correta, atulizando aquilo foi 
-    // explicito e mantendo o que nao foi alterado
     this.setState({
-      persons: [
-        {  name: newPerson, age: '21' },
-        {  name: 'Flávio', age: '22' },
-      ]
-    })
-  }
-  // sempre declarar funcoes como a escrita acima, para evitar erros e problema com a palavra this.
-
-  nameChangeHandler = (event) => {
-    this.setState({
-      persons: [
-        {  name: event.target.value, age: '21' },
-        {  name: 'Flávio', age: '22' },
-      ]
+      persons: persons
     })
   }
 
+  nameChangeHandler = (event, id) => {
+    const personIndex = this.state.persons.findIndex((p) => {
+      return p.id === id;
+    });
 
-  /*
-        // esta forma de chamar uma funcao pode ser ineficiente
-        onClick={() => this.swithNameHandler('Fláviâo')}
+    const person = {
+      ...this.state.persons[personIndex]
+    };
+    person.name = event.target.value;
 
-        Preferivel usar este
-        onClick={this.swithNameHandler.bind(this, 'Reference')}
-  */
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+
+    this.setState({ persons: persons });
+  }
+
+  togglePersonsHandler = () => {
+    const doesShow = this.state.showPersons;
+    this.setState({ showPersons: !doesShow })
+  }
+
   render() {
 
     const style = {
       backgroundColor: 'gray',
     }
 
+    let persons = null;
+
+    if (this.state.showPersons) {
+      persons = (
+        <div>
+          {this.state.persons.map((person, index) => {
+            return (
+              <Person
+                click={this.deletePerson.bind(this, person)}
+                name={person.name}
+                age={person.age}
+                changed={(event) => this.nameChangeHandler(event, person.id)}
+                key={person.id} />
+              // key => atributo para o react reconhecer os elementos da lista e renderizar 
+              // apenas os itens realmente alterados
+            )
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="App">
         <h1>React App</h1>
-        <button 
+        <button
           style={style}
-          onClick={() => this.swithNameHandler('Fláviâo')}>Swith name</button>
-        <Person 
-          name={this.state.persons[0].name} 
-          age={this.state.persons[0].age}
-          click={this.swithNameHandler.bind(this, 'Reference')}
-          changed={this.nameChangeHandler} />
-        <Person 
-          name={this.state.persons[1].name} 
-          age={this.state.persons[1].age} >
-          <h1>Likes Flávio</h1>
-        </Person>
+          onClick={this.togglePersonsHandler}>Toggle Persons</button>
+
+        {persons}
+
       </div>
     );
   }
 }
 
 export default App;
-
-
-// import React, { useState } from 'react';
-// import './App.css';
-
-// import Person from './Person/Person';
-
-// const app = props => {
-//   // UseState sempre retorna o estado, e funcao para atualizar o estado
-//   // Podem existir mais de um useState para tratar estados separadamente
-//  const [ personsState, setPersonsState ] = useState({
-//     persons: [
-//       {  name: 'Flávio', age: '22' },
-//       {  name: 'Julia', age: '21' },
-//     ],
-//   });
-
-//   const [ otherState, setOtherState ] = ('some value')
-
-//   const swithNameHandler = () => {
-//     setPersonsState({
-//       persons: [
-//         {  name: 'Julia', age: '21' },
-//         {  name: 'Flávio', age: '22' },
-//       ]
-//     })
-//   }
-
-//     return (
-//       <div className="App">
-//         <h1>React App</h1>
-//         <button onClick={swithNameHandler}>Swith name</button>
-//         <Person name={personsState.persons[0].name} age={personsState.persons[0].age} />
-//         <Person name={personsState.persons[1].name} age={personsState.persons[1].age} >
-//           <h1>Likes Flávio</h1>
-//         </Person>
-//       </div>
-//     );
-//   }
-
-// export default app;
