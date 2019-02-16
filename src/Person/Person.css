@@ -1,0 +1,6 @@
+.Person {
+    box-shadow: 0 2px 2px 2px #ccc;
+    margin: 30px;
+    width: 20%;
+    display: inline-block;
+}

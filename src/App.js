@@ -20,26 +20,55 @@ class App extends Component {
   // tomar cuidado ao utilizar, apenas quando necessário
 
 
-  swithNameHandler = () => {
-
+  swithNameHandler = (newPerson) => {
     // set state => usado para atualizar parte do state de forma correta, atulizando aquilo foi 
     // explicito e mantendo o que nao foi alterado
     this.setState({
       persons: [
-        {  name: 'Julia', age: '21' },
+        {  name: newPerson, age: '21' },
         {  name: 'Flávio', age: '22' },
       ]
     })
   }
   // sempre declarar funcoes como a escrita acima, para evitar erros e problema com a palavra this.
 
+  nameChangeHandler = (event) => {
+    this.setState({
+      persons: [
+        {  name: event.target.value, age: '21' },
+        {  name: 'Flávio', age: '22' },
+      ]
+    })
+  }
+
+
+  /*
+        // esta forma de chamar uma funcao pode ser ineficiente
+        onClick={() => this.swithNameHandler('Fláviâo')}
+
+        Preferivel usar este
+        onClick={this.swithNameHandler.bind(this, 'Reference')}
+  */
   render() {
+
+    const style = {
+      backgroundColor: 'gray',
+    }
+
     return (
       <div className="App">
         <h1>React App</h1>
-        <button onClick={this.swithNameHandler}>Swith name</button>
-        <Person name={this.state.persons[0].name} age={this.state.persons[0].age} />
-        <Person name={this.state.persons[1].name} age={this.state.persons[1].age} >
+        <button 
+          style={style}
+          onClick={() => this.swithNameHandler('Fláviâo')}>Swith name</button>
+        <Person 
+          name={this.state.persons[0].name} 
+          age={this.state.persons[0].age}
+          click={this.swithNameHandler.bind(this, 'Reference')}
+          changed={this.nameChangeHandler} />
+        <Person 
+          name={this.state.persons[1].name} 
+          age={this.state.persons[1].age} >
           <h1>Likes Flávio</h1>
         </Person>
       </div>
